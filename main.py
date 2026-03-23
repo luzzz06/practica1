@@ -70,7 +70,7 @@ class GestorTareas:
             "fecha_limite": fecha_limite or datetime.now() + timedelta(days=7),
             "completada": False,
             "etiquetas": []
-        }
+        }  
         
         resultado = self.tareas.insert_one(tarea)
         return str(resultado.inserted_id)
@@ -240,3 +240,4 @@ def ejemplo_uso():
     gestor.cerrar_conexion()
 
 if __name__ == "__main__":
+    ejemplo_uso()
