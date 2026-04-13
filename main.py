@@ -54,7 +54,7 @@ class GestorTareas:
             return None
     
     def crear_tarea(self, usuario_id: str, titulo: str, descripcion: str = "", 
-                   fecha_limite: Optional[datetime] = None) -> Optional[str]:
+                fecha_limite: Optional[datetime] = None) -> Optional[str]:
         """Crear una nueva tarea para un usuario"""
         # Verificar que el usuario existe
         if not self.obtener_usuario(usuario_id):
@@ -196,7 +196,7 @@ def ejemplo_uso():
     gestor = GestorTareas()
     
     # Crear usuario
-    usuario_id = gestor.crear_usuario("Ana García", "ana@email.com")
+    usuario_id = gestor.crear_usuario("Luz Ubiarco", "luz@email.com")
     print(f"Usuario creado con ID: {usuario_id}")
     
     if usuario_id:
