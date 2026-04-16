@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import requests
 
@@ -73,3 +74,21 @@ def logout():
 if __name__ == '__main__':
     app.run(debug=True)
 
+=======
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+tareas = []
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        tarea = request.form['tarea']
+        tareas.append(tarea)
+        return redirect('/')
+    return render_template('index.html', tareas=tareas)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+>>>>>>> 3f410a640a6dd5a141901b03748c4274ea4d47c7
