@@ -10,9 +10,23 @@ def index():
 
 @app.route('/agregar', methods=['POST'])
 def agregar():
-    nueva_tarea = request.form.get('tarea')
-    if nueva_tarea:
-        tareas_db.append(nueva_tarea)
+    nombre = request.form.get('tarea')
+    imagen = request.form.get('url_imagen') 
+    if nombre:
+       
+        tareas_db.append({'nombre': nombre, 'imagen': imagen})
+    return redirect(url_for('index'))
+
+@app.route('/eliminar-tarea', methods=['POST'])
+def eliminar():
+    tarea_id = request.form.get('id')
+    if tarea_id is not None:
+        try:
+            indice = int(tarea_id)
+            if 0 <= indice < len(tareas_db):
+                tareas_db.pop(indice)
+        except (ValueError, IndexError):
+            pass
     return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST']) 

@@ -1,46 +1,50 @@
 {% extends "base.html" %}
-{% block title %}Iniciar Sesión | NutriVida{% endblock %}
-{% block titulo %}Inicio de Sesión{% endblock %}
 
-{% block contenido %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card shadow border-0 p-4 bg-warning-subtle">
-        <h3 class="fw-bold text-center mb-4 text-dark">Iniciar Sesión</h3>
+{% block title %}Iniciar Sesión{% endblock %}
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Iniciar Sesión</h2>
+                    </div>
 
-        <form method="POST">
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Correo electrónico</label>
-            <input type="email" name="correo" class="form-control form-control-lg" placeholder="Ingresa tu correo" required>
-          </div>
+                    <form action="{{ url_for('login') }}" method="POST">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Correo electrónico</label>
+                            <input type="email" name="email" class="form-control form-control-lg" placeholder="correo@ejemplo.com" required>
+                        </div>
 
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Contraseña</label>
-            <input type="password" name="contraseña" class="form-control form-control-lg" placeholder="Tu contraseña" required>
-          </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Contraseña</label>
+                            <input type="password" name="password" class="form-control form-control-lg" placeholder="••••••••" required>
+                        </div>
 
-          <div class="d-grid">
-            <button type="submit" class="btn btn-warning btn-lg fw-semibold text-dark">
-              Entrar
-          </button>
-          </div>
-        </form>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">
+                                Entrar
+                            </button>
+                        </div>
 
-        <p class="text-muted text-center mt-3">
-          ¿No tienes cuenta?
-          <a href="{{ url_for('registro') }}" class="text-dark fw-semibold text-decoration-none">Regístrate aquí</a>
-        </p>
-      </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-0 text-muted">
+                            ¿Aún no tienes cuenta? 
+                            <a href="{{ url_for('register') }}" class="text-primary fw-bold text-decoration-none">Regístrate</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}
