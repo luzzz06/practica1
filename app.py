@@ -42,6 +42,13 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    gestor = gestordetareas()
+    if gestor.obtener_usuario2("hola@gmail.com","1234")
+        return render_template("login.html")
+    else:
+        pass
+else:
+    return render_template("errorconeccion.html")
     if request.method == 'POST':
         correo = request.form.get('email')
         password = request.form.get('password')
