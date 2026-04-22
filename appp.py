@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-from gestordetareas import Gestor # Asegúrate de que en gestordetareas.py diga "class Gestor:"
+# Asegúrate de que el archivo gestordetareas.py exista
+from gestordetareas import Gestor  
 
 app = Flask(__name__)
 
@@ -12,8 +13,9 @@ def index():
 @app.route('/agregar', methods=['POST'])
 def agregar():
     nombre = request.form.get('tarea')
+    imagen = request.form.get('url_imagen') 
     if nombre:
-        tareas_db.append({'nombre': nombre})
+        tareas_db.append({'nombre': nombre, 'imagen': imagen})
     return redirect(url_for('index'))
 
 @app.route('/eliminar-tarea', methods=['POST'])
@@ -28,12 +30,13 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST']) 
 def register():
     if request.method == 'POST':
         usuario = request.form.get('username')
+        # Aquí iría la lógica para guardar en base de datos
         print(f"Registro exitoso: {usuario}")
-        return redirect(url_for('login'))
+        return redirect(url_for('login')) # Después de registrarse, mandarlo a loguearse
     return render_template('registro.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -42,11 +45,16 @@ def login():
         correo = request.form.get('email')
         password = request.form.get('password')
         
-        # Simulación de validación (puedes usar tu Gestor aquí luego)
-        if correo == "hola@gmail.com" and password == "1234":
+        # Ejemplo de cómo usarías tu gestor (ajusta según tu clase)
+        # gestor = Gestor() 
+        # if gestor.obtener_usuario2(correo, password):
+        
+        if correo == "hola@gmail.com" and password == "1234": # Prueba simple
+            print(f"Login exitoso: {correo}")
             return redirect(url_for('index'))
         else:
-            return render_template("login.html", error="Datos incorrectos")
+            # Si los datos están mal, puedes mandarlo a una página de error o recargar login
+            return render_template("login.html", error="Credenciales incorrectas")
             
     return render_template('login.html')
 
