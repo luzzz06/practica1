@@ -3,198 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Agenda</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<div class="d-flex align-items-center justify-content-between p-4 mb-3 bg-danger-subtle text-danger-emphasis">
+<nav class="navbar navbar-expand-lg bg-danger-subtle shadow-sm mb-4 py-4">
+  <div class="container-fluid d-flex justify-content-between align-items-center position-relative">
+    
+    <a class="navbar-brand m-0" href="#"></a>
 
-  <!-- BOTÓN -->
-  <button class="btn btn-danger-subtle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions">
-    ☰ Menú
-  </button>
+    <h3 class="position-absolute top-50 start-50 translate-middle m-0 fw-bold">
+      Mi agenda de tareas
+    </h3>
 
-  <!-- TÍTULO CENTRADO -->
- <h3 class="m-2 text-center flex-grow-1">
-    Mi agenda de tareas
-  </h3>
-
- <nav class="navbar bg-body-tertiary">
-  <div class="container-fluid">
-    <span class="navbar-text">
-      Navbar text with an inline element
-    </span>
-  </div>
+    <div class="container-fluid">
+         <div class="ms-auto">
+            
+    <a href="{{ url_for('login') }}" class="btn bg-danger-subtle border-danger shadow-sm me-2">Iniciar Sesión</a>
+    <a href="{{ url_for('register') }}" class="btn bg-warning-subtle border-danger shadow-sm">Regístrate</a>
+</div>
+    </div>
 </nav>
 
-  <nav class="navbar navbar-expand-lg bg-danger-subtle shadow-sm mb-4">
-        <div class="container-fluid">
-            <div class="ms-auto">
-                <a href="#" class="btn bg-warning-subtle border-warning shadow-sm me-2">Iniciar Sesión</a>
-                <a href="#" class="btn bg-warning-subtle border-warning shadow-sm">Regístrate</a>
-            </div>
+    <div class="container-fluid px-4">
+        <div class="row justify-content-center mb-5">
+            {% block cards %}{% endblock %}
         </div>
-    </nav>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="container mt-4">
-
-  <h2 class="mb-3">📋 Mis tareas</h2>
-
-  <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Escribe una tarea...">
-    <button class="btn btn-success">Agregar</button>
-  </div>
-
-  <div class="card mb-2 shadow-sm">
-    <div class="card-body">Hacer tarea de mate</div>
-  </div>
-
-  <div class="card mb-2 shadow-sm">
-    <div class="card-body">Practicar baile</div>
-  </div>
-
-  <div class="card shadow-sm">
-    <div class="card-body">Estudiar programación</div>
-  </div>
-<ul class="list-group">
-  <li class="list-group-item">
-    <input class="form-check-input me-2" type="checkbox">
-    Hacer tarea de mate
-  </li>
-  <li class="list-group-item">
-    <input class="form-check-input me-2" type="checkbox">
-    Practicar baile
-  </li>
-  <li class="list-group-item">
-    <input class="form-check-input me-2" type="checkbox">
-    Estudiar programación
-  </li>
-</ul>
-<ul class="list-group list-group-flush shadow rounded">
-  <li class="list-group-item">📌 Hacer tarea de mate</li>
-  <li class="list-group-item">💃 Practicar baile</li>
-  <li class="list-group-item">💻 Estudiar programación</li>
-</ul>
-</div>
-<div class="container mt-4">
-
-  <h2 class="mb-3">📋 Mis tareas</h2>
-
-  <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Escribe una tarea...">
-    <button class="btn btn-success">Agregar</button>
-  </div>
-
-  <ul class="list-group">
-    <li class="list-group-item">Hacer tarea de mate</li>
-    <li class="list-group-item">Practicar baile</li>
-    <li class="list-group-item">Estudiar programación</li>
-  </ul>
-
-</div>
-
-<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
-  <div class="offcanvas-header">
-  <h5 class="offcanvas-title">Mi Agenda Escolar</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    <div class="offcanvas-body">
-   
-<div class="offcanvas-body">
-  <a href="/" class="btn btn-outline-dark w-100 mb-2">🏠 Inicio</a>
-  <a href="/tarea" class="btn btn-outline-dark w-100 mb-2">📋 Tareas</a>
-  <a href="/configuracion" class="btn btn-outline-dark w-100">⚙️ Configuración</a>
-</div>
-
-  ··<button type="button" class="btn btn-outline-danger w-100 mb-2">Inicio</button>
-  <button type="button" class="btn btn-outline-danger w-100 mb-2">Mis tareas</button>
-  <button type="button" class="btn btn-outline-danger w-100 mb-2">Configuración</button>
-</div>
-  </div>
-</div>
-
-[8:29 a.m., 16/4/2026] Lu💤: <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h3 class="mb-0">Mis Pendientes</h3>
+         <div class="row">
+            <div class="col-12">
+                <div class="card bg-warning-subtle border-warning-subtle shadow-sm mb-5">
+                    <div class="card-header bg-transparent border-bottom border-danger py-3">
+                        <h2 class="h4 mb-0 fw-bold">tareas</h2>
                     </div>
-                    
-                    <div class="card-body">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Nueva tarea..." aria-label="Nueva tarea">
-                            <button class="btn btn-primary" type="button">Agregar</button>
-                        </div>
-
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <input class="form-check-input me-2" type="checkbox" value="" id="check1">
-                                    <label class="form-check-label" for="check1">Estudiar etiquetas semánticas de HTML</label>
-                                </div>
-                                <span class="badge bg-warning text-dark">Urgente</span>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
-                                <div>
-                                    <input class="form-check-input me-2" type="checkbox" value="" id="check2" checked>
-                                    <label class="form-check-label text-decoration-line-through text-muted" for="check2">Instalar VS Code</label>
-                                </div>
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
-                            </li>
-
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <input class="form-check-input me-2" type="checkbox" value="" id="check3">
-                                    <label class="form-check-label" for="check3">Aprender el Grid de Bootstrap</label>
-                                </div>
-                                <span class="badge bg-info text-dark">Hoy</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="card-footer text-muted text-center">
-                        Tienes 2 tareas pendientes
+                    <div class="card-body p-4">
+                        {% block content %}{% endblock %}
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-</body>
-</html>
-[8:32 a.m., 16/4/2026] Lu💤: <div class="alert alert-danger d-flex align-items-center" role="alert">
-  <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-  <div>
-    An example danger alert with an icon
-  </div>
-</div>
-
-
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+       
 </body>
 </html>
