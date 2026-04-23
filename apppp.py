@@ -1,8 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-
+from flask import Flask, render_template, request, redirect, url_for
+from gestordetareas import Gestor # Asegúrate de que en gestordetareas.py diga "class Gestor:"
 
 app = Flask(__name__)
-app.secret_key = 'clave_secreta'  # 🔑 necesario para flash
 
 tareas_db = []
 
@@ -13,19 +12,19 @@ def index():
 @app.route('/agregar', methods=['POST'])
 def agregar():
     nombre = request.form.get('tarea')
-    if nombre and nombre.strip():
-        tareas_db.append({'nombre': nombre.strip()})
+    if nombre:
+        tareas_db.append({'nombre': nombre})
     return redirect(url_for('index'))
 
 @app.route('/eliminar-tarea', methods=['POST'])
 def eliminar():
     tarea_id = request.form.get('id')
-    if tarea_id:
+    if tarea_id is not None:
         try:
             indice = int(tarea_id)
             if 0 <= indice < len(tareas_db):
                 tareas_db.pop(indice)
-        except ValueError:
+        except (ValueError, IndexError):
             pass
     return redirect(url_for('index'))
 
@@ -33,28 +32,23 @@ def eliminar():
 def register():
     if request.method == 'POST':
         usuario = request.form.get('username')
-
-        if usuario:
-            
-            flash(f"Registro exitoso, bienvenido {usuario} 🎉", "success")
-            return redirect(url_for('login'))
-
+        print(f"Registro exitoso: {usuario}")
+        return redirect(url_for('login'))
     return render_template('registro.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-
     if request.method == 'POST':
         correo = request.form.get('email')
         password = request.form.get('password')
-
+        
+        # Simulación de validación (puedes usar tu Gestor aquí luego)
         if correo == "hola@gmail.com" and password == "1234":
             return redirect(url_for('index'))
         else:
-            error = "Datos incorrectos"
-
-    return render_template('login.html', error=error)
+            return render_template("login.html", error="Datos incorrectos")
+            
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
