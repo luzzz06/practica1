@@ -50,11 +50,12 @@ def login():
         password = request.form.get('password')
 
         if correo == "hola@gmail.com" and password == "1234":
+            # --- AQUÍ LANZAS EL MENSAJE ---
+            flash("¡Hola, bienvenido! Ya podrás cada día tratar de ser tu mejor versión ✨")
             return redirect(url_for('index'))
         else:
             error = "Datos incorrectos"
 
     return render_template('login.html', error=error)
-
 if __name__ == '__main__':
     app.run(debug=True)
