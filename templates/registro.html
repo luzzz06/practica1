@@ -3,6 +3,9 @@
 {% block title %}Crear Cuenta{% endblock %}
 
 {% block content %}
+
+
+
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-5">
@@ -10,15 +13,14 @@
                 <div class="card-body p-4 p-md-5">
                     
                     <div class="text-center mb-4">
-                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-block p-3 mb-3">
-                            <i class="bi bi-person-plus fs-1 text-success"></i>
+                        <div class="bg-pink-light rounded-circle d-inline-block p-3 mb-3">
+                            <i class="bi bi-person-plus fs-1 text-pink"></i>
                         </div>
                         <h2 class="fw-bold">Crear Cuenta</h2>
-                        <p class="text-muted small">Únete a nuestra comunidad hoy mismo</p>
+                        <p class="text-muted small">Bienvenido</p>
                     </div>
 
                     <form action="{{ url_for('register') }}" method="POST">
-                        
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nombre de usuario</label>
                             <div class="input-group">
@@ -39,16 +41,15 @@
                             <label class="form-label fw-bold">Contraseña</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
-                                <input type="password" name="password" class="form-control form-control-lg border-start-0 bg-light" placeholder="Crea una contraseña segura" required>
+                                <input type="password" name="password" class="form-control form-control-lg border-start-0 bg-light" placeholder="Crea una contraseña" required>
                             </div>
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm rounded-pill py-3">
+                            <button type="submit" class="btn btn-pink btn-lg fw-bold shadow-sm rounded-pill py-3">
                                 <i class="bi bi-check-circle-fill me-2"></i>Registrarse
                             </button>
                         </div>
-
                     </form>
 
                     <hr class="my-4 opacity-25">
@@ -56,7 +57,7 @@
                     <div class="text-center">
                         <p class="mb-0 text-muted">
                             ¿Ya tienes una cuenta? 
-                            <a href="{{ url_for('login') }}" class="text-success fw-bold text-decoration-none">Inicia sesión aquí</a>
+                            <a href="{{ url_for('login') }}" class="text-pink fw-bold text-decoration-none">Inicia sesión aquí</a>
                         </p>
                     </div>
 
@@ -66,3 +67,5 @@
     </div>
 </div>
 {% endblock %}
+
+

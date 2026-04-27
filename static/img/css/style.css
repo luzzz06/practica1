@@ -1,0 +1,9 @@
+/* Colores personalizados rosa */
+.text-pink { color: #ff69b4 !important; }
+.bg-pink-light { background-color: #ffe4e1 !important; }
+.btn-pink { 
+    background-color: #ff69b4 !important; 
+    border-color: #ff69b4 !important; 
+    color: white !important; 
+}
+.btn-pink:hover { background-color: #ff1493 !important; }

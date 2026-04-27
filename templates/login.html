@@ -9,23 +9,8 @@
             <div class="card shadow border-0 rounded-4">
                 <div class="card-body p-4 p-md-5">
 
-                    <!-- ✅ MENSAJES FLASH (registro exitoso) -->
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                      {% if messages %}
-                        {% for category, message in messages %}
-                          <div class="alert alert-{{ category }} text-center fw-bold">
-                            {{ message }}
-                          </div>
-                        {% endfor %}
-                      {% endif %}
-                    {% endwith %}
+                    
 
-                    <!-- ✅ ERROR DE LOGIN -->
-                    {% if error %}
-                        <div class="alert alert-danger text-center fw-bold">
-                            {{ error }}
-                        </div>
-                    {% endif %}
                     
                     <div class="text-center mb-4">
                         <div class="bg-primary bg-opacity-10 rounded-circle d-inline-block p-3 mb-3">
@@ -42,6 +27,7 @@
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
                                 <input type="email" name="email" class="form-control form-control-lg border-start-0 bg-light" placeholder="correo@ejemplo.com" required>
+                                <i class="bi bi-person-circle"></i>
                             </div>
                         </div>
 

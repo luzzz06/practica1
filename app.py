@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-
+from gestor_tareas import GestorTareas
 
 app = Flask(__name__)
+gestor = GestorTareas()
 app.secret_key = 'clave_secreta'  # 🔑 necesario para flash
 
 tareas_db = []
@@ -29,17 +30,36 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
-@app.route('/register', methods=['GET', 'POST'])
+
+@app.route('/register', methods=['POST'])
 def register():
-    if request.method == 'POST':
-        usuario = request.form.get('username')
+    # 1. Sacas los datos del formulario rosa
+    nombre = request.form.get('username')
+    email = request.form.get('email')
 
-        if usuario:
+    # 2. LLAMAS A LA LÓGICA (el archivo .py que ya tienes)
+    nuevo_id = gestor.crear_usuario(nombre, email)
+
+    # 3. Si funcionó, lo mandas a su lista de tareas
+    return redirect(url_for('ver_tareas'))
+
+
+
+
+
+
+
+#@app.route('/register', methods=['GET', 'POST'])
+#def register():
+  #  if request.method == 'POST':
+       # usuario = request.form.get('username')
+
+       # if usuario:
             
-            flash(f"Registro exitoso, bienvenido {usuario} 🎉", "success")
-            return redirect(url_for('login'))
+           # flash(f"Registro exitoso, bienvenido {usuario} 🎉", "success")
+           # return redirect(url_for('login'))
 
-    return render_template('registro.html')
+  #  return render_template('registro.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
