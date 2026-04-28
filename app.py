@@ -30,19 +30,33 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
+@app.route('/registro', methods=['GET', 'POST']) # Usamos /registro para que coincida con tu HTML
+def registro():
+    if request.method == 'POST':
+        # 1. Sacamos los datos con los nombres exactos del formulario rosa
+        nombre = request.form.get('usuario')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
 
-@app.route('/register', methods=['POST'])
-def register():
-    # 1. Sacas los datos del formulario rosa
-    nombre = request.form.get('username')
-    email = request.form.get('email')
+        # 2. Validación rápida de contraseñas
+        if password != confirm_password:
+            flash("❌ Las contraseñas no coinciden", "danger")
+            return redirect(url_for('registro'))
 
-    # 2. LLAMAS A LA LÓGICA (el archivo .py que ya tienes)
-    nuevo_id = gestor.crear_usuario(nombre, email)
+        # 3. Llamamos a tu lógica de MongoDB (gestor_tareas.py)
+        # Asegúrate de que en gestor_tareas.py el método se llame crear_usuario
+        try:
+            nuevo_id = gestor.crear_usuario(nombre, email, password)
+            if nuevo_id:
+                flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
+                return redirect(url_for('login'))
+        except Exception as e:
+            flash(f"Error al registrar: {e}", "danger")
+            return redirect(url_for('registro'))
 
-    # 3. Si funcionó, lo mandas a su lista de tareas
-    return redirect(url_for('ver_tareas'))
-
+    # Si es GET (cuando entras a la página), muestra el formulario rosa
+    return render_template('registro.html')
 
 
 

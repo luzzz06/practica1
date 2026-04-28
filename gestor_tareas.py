@@ -6,21 +6,23 @@ from typing import Optional, List, Dict
 import os
 
 class GestorTareas:
-    def __init__(self, uri: str = 'mongodb://localhost:27017/'):
-        """Inicializar conexión a MongoDB"""
+    def __init__(self):
+        # Todo este bloque debe llevar sangría (4 espacios)
         try:
-            self.cliente = MongoClient(uri, serverSelectionTimeoutMS=5000)
+
+            self.cliente = MongoClient("mongodb+srv://luzzz06:UxVkjeZjqCzeNTFE@luzz.jzuseoq.mongodb.net/?appName=luzz")
+
+            # Verifica la conexión
             self.cliente.admin.command('ping')
-            self.db = self.cliente['gestor_tareas']
-            self.tareas = self.db['tareas']
-            self.usuarios = self.db['usuarios']
             
-            # Crear índices necesarios
-            self._crear_indices()
-            print("✅ Conectado a MongoDB")
-        except ConnectionFailure:
-            print("❌ Error: No se pudo conectar a MongoDB")
-            raise
+            self.db = self.cliente['gestor_tareas']
+            self.usuarios = self.db['usuarios']
+            self.tareas = self.db['tareas'] # No olvides la colección de tareas
+            print("✅ Conexión local exitosa")
+        except Exception as e:
+            print(f"❌ Error: No se pudo conectar a MongoDB: {e}")
+            # Si falla el local, aquí podrías poner la cadena de Atlas para salvar la entrega
+
     
     def _crear_indices(self):
         """Crear índices para mejorar rendimiento"""

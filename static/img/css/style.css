@@ -1,9 +1,42 @@
-/* Colores personalizados rosa */
-.text-pink { color: #ff69b4 !important; }
-.bg-pink-light { background-color: #ffe4e1 !important; }
-.btn-pink { 
-    background-color: #ff69b4 !important; 
-    border-color: #ff69b4 !important; 
-    color: white !important; 
+/* Estilos para la página de Registro */
+.body-registro {
+    background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
 }
-.btn-pink:hover { background-color: #ff1493 !important; }
+
+.card-registro {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(244, 143, 177, 0.3);
+    overflow: hidden;
+}
+
+.registro-header {
+    background-color: #f48fb1; /* El rosado de tu agenda */
+    color: white;
+    text-align: center;
+    padding: 30px;
+}
+
+.btn-registro {
+    background-color: #f06292;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-registro:hover {
+    background-color: #e91e63;
+    transform: translateY(-2px);
+}
+
+.form-control-custom {
+    border-radius: 10px;
+    border: 1px solid #f8bbd0;
+    padding: 10px;
+}

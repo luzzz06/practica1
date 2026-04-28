@@ -3,69 +3,51 @@
 {% block title %}Crear Cuenta{% endblock %}
 
 {% block content %}
-
-
-
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body p-4 p-md-5">
+<div class="registro-container">
+    <div class="col-md-5 mx-auto">
+        <div class="card card-registro">
+            <div class="registro-header">
+                <img src="{{ url_for('static', filename='img/m.jpeg') }}" 
+                     class="rounded-circle mb-2" 
+                     style="width: 70px; height: 70px; object-fit: cover; border: 2px solid white;">
+                <h3 class="mb-0">Regístrate</h3>
+                <small>Únete a tu agenda personal</small>
+            </div>
+            
+            <div class="card-body p-4">
+                <form action="/registro" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #ad1457;">Nombre de Usuario</label>
+                        <input type="text" name="usuario" class="form-control form-control-custom" placeholder="@usuario" required>
+                    </div>
                     
-                    <div class="text-center mb-4">
-                        <div class="bg-pink-light rounded-circle d-inline-block p-3 mb-3">
-                            <i class="bi bi-person-plus fs-1 text-pink"></i>
-                        </div>
-                        <h2 class="fw-bold">Crear Cuenta</h2>
-                        <p class="text-muted small">Bienvenido</p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #ad1457;">Tu mejor Email</label>
+                        <input type="email" name="email" class="form-control form-control-custom" placeholder="ejemplo@correo.com" required>
                     </div>
-
-                    <form action="{{ url_for('register') }}" method="POST">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Nombre de usuario</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
-                                <input type="text" name="username" class="form-control form-control-lg border-start-0 bg-light" placeholder="Ej: JuanPerez" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Correo electrónico</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
-                                <input type="email" name="email" class="form-control form-control-lg border-start-0 bg-light" placeholder="correo@ejemplo.com" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Contraseña</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
-                                <input type="password" name="password" class="form-control form-control-lg border-start-0 bg-light" placeholder="Crea una contraseña" required>
-                            </div>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-pink btn-lg fw-bold shadow-sm rounded-pill py-3">
-                                <i class="bi bi-check-circle-fill me-2"></i>Registrarse
-                            </button>
-                        </div>
-                    </form>
-
-                    <hr class="my-4 opacity-25">
-
-                    <div class="text-center">
-                        <p class="mb-0 text-muted">
-                            ¿Ya tienes una cuenta? 
-                            <a href="{{ url_for('login') }}" class="text-pink fw-bold text-decoration-none">Inicia sesión aquí</a>
-                        </p>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" style="color: #ad1457;">Contraseña</label>
+                        <input type="password" name="password" class="form-control form-control-custom" required>
                     </div>
-
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" style="color: #ad1457;">Confirmar Contraseña</label>
+                        <input type="password" name="confirm_password" class="form-control form-control-custom" required>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-registro">
+                            ¡Comenzar ahora!
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3">
+                    <p class="small text-muted">¿Ya tienes cuenta? <a href="/login" style="color: #f06292; font-weight: bold; text-decoration: none;">Inicia sesión</a></p>
                 </div>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-
-
