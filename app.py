@@ -30,66 +30,60 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
-@app.route('/registro', methods=['GET', 'POST']) # Usamos /registro para que coincida con tu HTML
+
+@app.route('/registro', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
-        # 1. Sacamos los datos con los nombres exactos del formulario rosa
+        # 1. Sacamos los datos del formulario
         nombre = request.form.get('usuario')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # 2. Validación rápida de contraseñas
+        # 2. Validación rápida: ¿las contraseñas son iguales?
         if password != confirm_password:
             flash("❌ Las contraseñas no coinciden", "danger")
             return redirect(url_for('registro'))
 
-        # 3. Llamamos a tu lógica de MongoDB (gestor_tareas.py)
-        # Asegúrate de que en gestor_tareas.py el método se llame crear_usuario
+        # 3. Intentamos guardar en la base de datos
         try:
+            # Llamamos a tu gestor de MongoDB Atlas
             nuevo_id = gestor.crear_usuario(nombre, email, password)
+            
             if nuevo_id:
                 flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
+                # ¡ESTA ES LA MAGIA! Te manda al login después de guardar
                 return redirect(url_for('login'))
+            else:
+                flash("❌ No se pudo crear el usuario", "danger")
+                return redirect(url_for('registro'))
+                
         except Exception as e:
-            flash(f"Error al registrar: {e}", "danger")
+            # Si algo sale mal con MongoDB, aquí nos avisará
+            flash(f"Error de conexión: {e}", "danger")
             return redirect(url_for('registro'))
 
-    # Si es GET (cuando entras a la página), muestra el formulario rosa
+    # Si entran normal (GET), cargamos el template rosa
     return render_template('registro.html')
 
 
 
-
-
-
-#@app.route('/register', methods=['GET', 'POST'])
-#def register():
-  #  if request.method == 'POST':
-       # usuario = request.form.get('username')
-
-       # if usuario:
-            
-           # flash(f"Registro exitoso, bienvenido {usuario} 🎉", "success")
-           # return redirect(url_for('login'))
-
-  #  return render_template('registro.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
-
     if request.method == 'POST':
         correo = request.form.get('email')
         password = request.form.get('password')
-
-        if correo == "hola@gmail.com" and password == "1234":
-            # --- AQUÍ LANZAS EL MENSAJE ---
-            flash("¡Hola, bienvenido! Ya podrás cada día tratar de ser tu mejor versión ✨")
+        
+        # Aquí puedes buscar en MongoDB Atlas con:
+        # usuario_encontrado = gestor.usuarios.find_one({"email": correo})
+        
+        if correo == "hola@gmail.com" and password == "1234": # Prueba rápida
+            flash("✨ ¡Hola de nuevo! Ya podrás cada día tratar de ser tu mejor versión")
             return redirect(url_for('index'))
         else:
-            error = "Datos incorrectos"
+            flash("❌ Correo o contraseña incorrectos", "danger")
+            
+    return render_template('login.html')
 
-    return render_template('login.html', error=error)
 if __name__ == '__main__':
     app.run(debug=True)
