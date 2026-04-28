@@ -28,6 +28,7 @@ class GestorTareas:
         self.tareas.create_index([("usuario_id", 1), ("fecha_creacion", -1)])
         self.tareas.create_index("estado")
     
+
     def crear_usuario(self, nombre: str, email: str) -> Optional[str]:
         """Crear un nuevo usuario"""
         try:
@@ -42,17 +43,24 @@ class GestorTareas:
             print(f"❌ Error: El email {email} ya está registrado")
             return None
     
-    def obtener_usuario(self, usuario_id: str) -> Optional[Dict]:
-        """Obtener usuario por ID"""
+    def obtener_usuario(self, correo: str) -> Optional[Dict]:
+        """Obtener usuario por Email y preparar validación"""
         try:
-            usuario = self.usuarios.find_one({"_id": ObjectId(usuario_id)})
+            # Buscamos por el campo "email" directamente con el texto
+            usuario = self.usuarios.find_one({"email": correo})
+            
             if usuario:
+                # Aquí es donde el profesor quiere que luego verifiques el password
+                # Por ahora, convertimos el ID a texto para que Flask no falle
                 usuario['_id'] = str(usuario['_id'])
-            return usuario
+                return usuario
+                
+            return None
         except Exception as e:
             print(f"Error al obtener usuario: {e}")
             return None
-    
+     
+
     def crear_tarea(self, usuario_id: str, titulo: str, descripcion: str = "", 
                 fecha_limite: Optional[datetime] = None) -> Optional[str]:
         """Crear una nueva tarea para un usuario"""
@@ -184,13 +192,15 @@ class GestorTareas:
             resultado.append(t)
         return resultado
     
+
+
     def cerrar_conexion(self):
         """Cerrar conexión a MongoDB"""
         if self.cliente:
             self.cliente.close()
             print("🔌 Conexión cerrada")
             
-#ya lo utilizeengestor
+
 # Ejemplo de uso
 def ejemplo_uso():
     # Inicializar gestor
