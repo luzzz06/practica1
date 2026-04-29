@@ -2,11 +2,12 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from gestor_tareas import GestorTareas
 
 app = Flask(__name__)
-app.secret_key = 'mi_llave_secreta_para_flask'  
+app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
 
 
 tareas_db = []
+
 
 @app.route('/')
 def index():
@@ -34,7 +35,6 @@ def eliminar():
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
-        # Mantenemos tus nombres de variable del formulario
         nombre = request.form.get('usuario')
         email = request.form.get('email')
         password = request.form.get('password')
@@ -44,20 +44,13 @@ def registro():
             flash("❌ Las contraseñas no coinciden", "danger")
             return redirect(url_for('registro'))
 
-        try:
-            # Usamos el método 'crear_usuario' de la clase de la imagen
-            exito = gestor.crear_usuario(nombre, email, password)
-            
-            if exito:
-                flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
-                return redirect(url_for('login'))
-            else:
-                # Si retorna False es porque el email ya existe (debido al índice único)
-                flash("❌ El correo ya está registrado", "danger")
-                return redirect(url_for('registro'))
-                
-        except Exception as e:
-            flash(f"Error de conexión: {e}", "danger")
+        exito = gestor.crear_usuario(nombre, email, password)
+        
+        if exito:
+            flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
+            return redirect(url_for('login'))
+        else:
+            flash("❌ El correo ya está registrado o hubo un error", "danger")
             return redirect(url_for('registro'))
 
     return render_template('registro.html')
@@ -68,12 +61,10 @@ def login():
         correo = request.form.get('email')
         password = request.form.get('password')
         
-        # Usamos 'obtener_usuario_por_email' extraído de la imagen
         usuario_encontrado = gestor.obtener_usuario_por_email(correo)
         
-        # Verificamos si el usuario existe y si la contraseña coincide
         if usuario_encontrado and usuario_encontrado['secreto'] == password:
-            flash(f"✨ ¡Hola de nuevo! Ya podrás cada día tratar de ser tu mejor versión", "success")
+            flash(f"✨ ¡Hola de nuevo! Ya puedes gestionar tus tareas", "success")
             return redirect(url_for('index'))
         else:
             flash("❌ Correo o contraseña incorrectos", "danger")
