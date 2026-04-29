@@ -5,24 +5,39 @@ from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 import os
 
+
 class GestorTareas:
     def __init__(self):
-        # Todo este bloque debe llevar sangría (4 espacios)
+        # Usamos tu link de Atlas que ya probamos
+        uri = "mongodb+srv://luzzz06:UxVkjeZjqCzeNTFE@luzz.jzuseoq.mongodb.net/?appName=luzz"
         try:
-
-            self.cliente = MongoClient("mongodb+srv://luzzz06:UxVkjeZjqCzeNTFE@luzz.jzuseoq.mongodb.net/?appName=luzz")
-
-            # Verifica la conexión
-            self.cliente.admin.command('ping')
-            
-            self.db = self.cliente['gestor_tareas']
+            self.cliente = MongoClient(uri, serverSelectionTimeoutMS=5000)
+            self.db = self.cliente['gestor_tareas'] 
             self.usuarios = self.db['usuarios']
-            self.tareas = self.db['tareas'] # No olvides la colección de tareas
-            print("✅ Conexión local exitosa")
+            
+          
+            self.usuarios.create_index("email", unique=True)
+            print("✅ Conexión a la Nube Exitosa")
         except Exception as e:
-            print(f"❌ Error: No se pudo conectar a MongoDB: {e}")
-            # Si falla el local, aquí podrías poner la cadena de Atlas para salvar la entrega
+            print(f"❌ Error de conexión: {e}")
 
+    def crear_usuario(self, nombre, email, password):
+        try:
+            # Usamos los nombres de campos que espera tu formulario rosa
+            self.usuarios.insert_one({
+                "nombre": nombre,
+                "email": email,
+                "password": password,
+                "fecha_registro": datetime.now()
+            })
+            return True
+        except Exception as e:
+            print(f"Error al crear usuario: {e}")
+            return False
+
+    def obtener_usuario_por_email(self, email):
+        # Esto te servirá para el Login más tarde
+        return self.usuarios.find_one({"email": email})
     
     def _crear_indices(self):
         """Crear índices para mejorar rendimiento"""
@@ -31,7 +46,7 @@ class GestorTareas:
         self.tareas.create_index("estado")
     
 
-    def crear_usuario(self, nombre: str, email: str) -> Optional[str]:
+    def crear_usuario(self, nombre: str, email: str, password: str) -> Optional[str]:
         """Crear un nuevo usuario"""
         try:
             resultado = self.usuarios.insert_one({

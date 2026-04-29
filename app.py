@@ -2,8 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from gestor_tareas import GestorTareas
 
 app = Flask(__name__)
-gestor = GestorTareas()
-app.secret_key = 'clave_secreta'  # 🔑 necesario para flash
+app.secret_key = 'mi_llave_secreta_para_flask'  
+gestor = GestorTareas() 
+
 
 tareas_db = []
 
@@ -30,43 +31,36 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
-
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
-        # 1. Sacamos los datos del formulario
+        # Mantenemos tus nombres de variable del formulario
         nombre = request.form.get('usuario')
         email = request.form.get('email')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
-        # 2. Validación rápida: ¿las contraseñas son iguales?
         if password != confirm_password:
             flash("❌ Las contraseñas no coinciden", "danger")
             return redirect(url_for('registro'))
 
-        # 3. Intentamos guardar en la base de datos
         try:
-            # Llamamos a tu gestor de MongoDB Atlas
-            nuevo_id = gestor.crear_usuario(nombre, email, password)
+            # Usamos el método 'crear_usuario' de la clase de la imagen
+            exito = gestor.crear_usuario(nombre, email, password)
             
-            if nuevo_id:
+            if exito:
                 flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
-                # ¡ESTA ES LA MAGIA! Te manda al login después de guardar
                 return redirect(url_for('login'))
             else:
-                flash("❌ No se pudo crear el usuario", "danger")
+                # Si retorna False es porque el email ya existe (debido al índice único)
+                flash("❌ El correo ya está registrado", "danger")
                 return redirect(url_for('registro'))
                 
         except Exception as e:
-            # Si algo sale mal con MongoDB, aquí nos avisará
             flash(f"Error de conexión: {e}", "danger")
             return redirect(url_for('registro'))
 
-    # Si entran normal (GET), cargamos el template rosa
     return render_template('registro.html')
-
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -74,11 +68,12 @@ def login():
         correo = request.form.get('email')
         password = request.form.get('password')
         
-        # Aquí puedes buscar en MongoDB Atlas con:
-        # usuario_encontrado = gestor.usuarios.find_one({"email": correo})
+        # Usamos 'obtener_usuario_por_email' extraído de la imagen
+        usuario_encontrado = gestor.obtener_usuario_por_email(correo)
         
-        if correo == "hola@gmail.com" and password == "1234": # Prueba rápida
-            flash("✨ ¡Hola de nuevo! Ya podrás cada día tratar de ser tu mejor versión")
+        # Verificamos si el usuario existe y si la contraseña coincide
+        if usuario_encontrado and usuario_encontrado['secreto'] == password:
+            flash(f"✨ ¡Hola de nuevo! Ya podrás cada día tratar de ser tu mejor versión", "success")
             return redirect(url_for('index'))
         else:
             flash("❌ Correo o contraseña incorrectos", "danger")
