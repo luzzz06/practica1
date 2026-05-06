@@ -88,3 +88,42 @@
     border-color: #f06292;
     box-shadow: 0 0 0 0.25rem rgba(240, 98, 146, 0.25);
 }
+
+
+
+
+
+/* Estilo para los bloques de tiempo (como etiquetas) */
+.badge-agenda {
+    background-color: #f8f9fa;
+    color: #495057;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    display: inline-block;
+    border: 1px solid #e9ecef;
+}
+
+/* Estilo para las cajas de las listas */
+.card-lista {
+    background: white;
+    border-radius: 15px;
+    min-height: 200px;
+    border: 1px solid #eee;
+}
+
+/* El toque azul para cuando pasas el ratón */
+.card-lista:hover {
+    border-color: #cfe2ff;
+    transition: 0.3s;
+}
+
+/* Estilo de los checkboxes */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

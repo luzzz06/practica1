@@ -21,14 +21,27 @@
       Mi agenda de tareas
     </h3>
 
-    <div class="container-fluid">
-         <div class="ms-auto">
-            
-    <a href="{{ url_for('login') }}" class="btn bg-danger-subtle border-danger shadow-sm me-2">Iniciar Sesión</a>
-    <a href="{{ url_for('registro') }}" class="btn bg-warning-subtle border-danger shadow-sm">Regístrate</a>
-</div>
+ 
+ <div class="ms-auto">
+      {% if session.get('usuario_nombre') %}
+        <div class="dropdown d-inline">
+          <button class="btn bg-danger-subtle border-danger dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> {{ session.get('usuario_nombre') }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}">Cerrar Sesión</a></li>
+          </ul>
+        </div>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn bg-danger-subtle border-danger shadow-sm me-2">Iniciar Sesión</a>
+        <a href="{{ url_for('registro') }}" class="btn bg-warning-subtle border-danger shadow-sm">Regístrate</a>
+      {% endif %}
     </div>
+  </div>
 </nav>
+
 
 
 <main>

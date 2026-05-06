@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from gestor_tareas import GestorTareas
 
 app = Flask(__name__)
@@ -32,28 +32,42 @@ def eliminar():
             pass
     return redirect(url_for('index'))
 
+
+@app.route('/metas')
+def metas():
+    # Verificamos que el usuario esté logueado (por seguridad)
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Aquí podrías buscar metas en MongoDB si decides guardarlas ahí después
+    return render_template('metas.html')
+
+@app.route('/calendario')
+def calendario():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    return render_template('calendario.html')
+
+
+
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
     if request.method == 'POST':
         nombre = request.form.get('usuario')
         email = request.form.get('email')
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
 
-        if password != confirm_password:
-            flash("❌ Las contraseñas no coinciden", "danger")
-            return redirect(url_for('registro'))
-
-        exito = gestor.crear_usuario(nombre, email, password)
-        
-        if exito:
-            flash(f"¡Bienvenida {nombre}! Tu cuenta ha sido creada ✨", "success")
+        # Registro directo
+        if gestor.crear_usuario(nombre, email, password):
+            flash("¡Registro exitoso!", "success")
             return redirect(url_for('login'))
         else:
-            flash("❌ El correo ya está registrado o hubo un error", "danger")
+            flash("Error: El correo ya existe", "danger")
             return redirect(url_for('registro'))
 
     return render_template('registro.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -61,15 +75,25 @@ def login():
         correo = request.form.get('email')
         password = request.form.get('password')
         
-        usuario_encontrado = gestor.obtener_usuario_por_email(correo)
-        
-        if usuario_encontrado and usuario_encontrado['secreto'] == password:
-            flash(f"✨ ¡Hola de nuevo! Ya puedes gestionar tus tareas", "success")
+        # Buscamos al usuario en la base de datos
+        usuario = gestor.obtener_usuario_por_email(correo)
+    
+        # Verificamos que el usuario exista y la contraseña ('secreto') coincida
+        if usuario and usuario['secreto'] == password:
+            session['usuario_id'] = str(usuario['_id'])
+            session['usuario_nombre'] = usuario['user'] 
             return redirect(url_for('index'))
-        else:
-            flash("❌ Correo o contraseña incorrectos", "danger")
-            
+        
+        flash("Correo o contraseña incorrectos", "danger")
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    
+    session.clear() 
+    flash("Has cerrado sesión correctamente", "info")
+    return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

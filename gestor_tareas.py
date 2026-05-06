@@ -4,7 +4,7 @@ from datetime import datetime
 class GestorTareas:
     def __init__(self, uri="mongodb://localhost:27017/"):
         self.cliente = MongoClient(uri, serverSelectionTimeoutMS=2000)
-        self.db = self.cliente['mi_nueva_app']
+        self.db = self.cliente['Mi_gestor_tareas']
         self.usuarios = self.db['usuarios']
         self.usuarios.create_index("email", unique=True)
 

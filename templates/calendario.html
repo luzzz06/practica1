@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-center mb-4 fw-bold">Mi Agenda Diaria</h2>
+
+    <!-- BLOQUE DE TIEMPO (El horario de arriba) -->
+    <div class="table-responsive shadow-sm rounded-4 bg-white p-3 mb-5">
+        <p class="small fw-bold text-muted mb-2">Bloque de tiempo</p>
+        <table class="table table-borderless text-center align-middle mb-0">
+            <thead>
+                <tr class="text-muted small border-bottom">
+                    <th>05:00</th>
+                    <th>06:30</th>
+                    <th>08:00</th>
+                    <th>09:30</th>
+                    <th>11:00</th>
+                    <th>12:30</th>
+                    <th>14:00</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td><span class="badge-agenda">Despertar</span></td>
+                    <td><span class="badge-agenda">Morning Walk</span></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="badge-agenda">Ir al súper</span></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- LISTAS DE TAREAS POR CATEGORÍAS -->
+    <div class="row g-4">
+        <!-- Columna 1: No negociables -->
+        <div class="col-md-4">
+            <div class="card-lista p-3">
+                <h6 class="fw-bold mb-3 border-bottom pb-2">No negociables (de hoy)</h6>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="t1" checked>
+                    <label class="form-check-label" for="t1">Workout</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="t2" checked>
+                    <label class="form-check-label text-decoration-line-through text-muted" for="t2">Leer 20 min.</label>
+                </div>
+                <div class="text-primary small mt-3 cursor-pointer"><i class="bi bi-plus"></i> Añadir</div>
+            </div>
+        </div>
+
+        <!-- Columna 2: Personal -->
+        <div class="col-md-4">
+            <div class="card-lista p-3">
+                <h6 class="fw-bold mb-3 border-bottom pb-2">Personal to-do list</h6>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="t3">
+                    <label class="form-check-label" for="t3">Limpiar mi cuarto</label>
+                </div>
+                <div class="text-primary small mt-3 cursor-pointer"><i class="bi bi-plus"></i> Añadir</div>
+            </div>
+        </div>
+
+        <!-- Columna 3: Trabajo/Escuela -->
+        <div class="col-md-4">
+            <div class="card-lista p-3 border-primary-subtle shadow-sm">
+                <h6 class="fw-bold mb-3 border-bottom pb-2 text-primary">Work to-do list</h6>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="t4">
+                    <label class="form-check-label" for="t4">Entregar proyecto PAEC</label>
+                </div>
+                <div class="text-primary small mt-3 cursor-pointer"><i class="bi bi-plus"></i> Añadir</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
