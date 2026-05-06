@@ -6,31 +6,38 @@ app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
 
 
-tareas_db = []
-
 
 @app.route('/')
 def index():
-    return render_template('index.html', tareas=tareas_db)
+    return render_template('index.html')
 
-@app.route('/agregar', methods=['POST'])
-def agregar():
-    nombre = request.form.get('tarea')
-    if nombre and nombre.strip():
-        tareas_db.append({'nombre': nombre.strip()})
-    return redirect(url_for('index'))
+@app.route('/tareas')
+def tareas():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    # Aquí es donde deberías definir tareas_db para que no te de error
+    return render_template('tareas.html')
 
-@app.route('/eliminar-tarea', methods=['POST'])
-def eliminar():
-    tarea_id = request.form.get('id')
-    if tarea_id:
-        try:
-            indice = int(tarea_id)
-            if 0 <= indice < len(tareas_db):
-                tareas_db.pop(indice)
-        except ValueError:
-            pass
-    return redirect(url_for('index'))
+
+#@app.route('/agregar', methods=['POST'])
+#def agregar():
+   # nombre = request.form.get('tarea')
+  #  if nombre and nombre.strip():
+ #       tareas_db.append({'nombre': nombre.strip()})
+   # return redirect(url_for('index'))
+
+#@app.route('/eliminar-tarea', methods=['POST'])
+#def eliminar():
+ #   tarea_id = request.form.get('id')
+  #  if tarea_id:
+   #     try:
+     #       indice = int(tarea_id)
+    #        if 0 <= indice < len(tareas_db):
+      #          tareas_db.pop(indice)
+       # except ValueError:
+        #    pass
+    #return redirect(url_for('index'))
 
 
 @app.route('/metas')
