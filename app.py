@@ -5,7 +5,6 @@ app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
