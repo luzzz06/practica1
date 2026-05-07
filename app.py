@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from gestor_tareas import GestorTareas
+from gestor_tareas import Gestortareas
 
 app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_para_flask'
-gestor = GestorTareas() 
+gestor = Gestortareas() 
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 @app.route('/tareas')

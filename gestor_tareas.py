@@ -3,12 +3,11 @@ from pymongo.errors import DuplicateKeyError, ConnectionFailure
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
-import os
 
-
+       
 class Gestortareas:
-    def __init__(self, uri="mongodb://localhost:27017/"):
-        self.cliente = MongoClient(uri, serverSelectionTimeoutMS=2000)
+
+        def __init__(self, uri="mongodb://localhost:27017/"):
         self.db = self.cliente['Mis_Tareas']
         self.usuarios = self.db['usuarios']
         self.usuarios.create_index("email", unique=True)
