@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from gestor_tareas import GestorTareas
 
+
 app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
@@ -11,26 +12,32 @@ tareas_db = []
 
 @app.route('/')
 def index():
-    return render_template('index.html', tareas=tareas_db)
+
+    return render_template('index.html')
+
+@app.route('/tareas')
+def tareas():
+    # 1. Traemos las tareas de MongoDB
+    lista_tareas = db.obtener_todas()
+    # 2. Renderizamos tareas.html (donde pusiste el datalist)
+    return render_template('tareas.html', tareas=lista_tareas)
+
 
 @app.route('/agregar', methods=['POST'])
 def agregar():
-    nombre = request.form.get('tarea')
-    if nombre and nombre.strip():
-        tareas_db.append({'nombre': nombre.strip()})
-    return redirect(url_for('index'))
+    titulo = request.form.get('tarea')
+    if titulo:
+        db.crear_tarea(titulo)
+    return redirect(url_for('tareas')) # Te regresa a la lista de tareas
 
-@app.route('/eliminar-tarea', methods=['POST'])
+@app.route('/eliminar', methods=['POST'])
 def eliminar():
-    tarea_id = request.form.get('id')
-    if tarea_id:
-        try:
-            indice = int(tarea_id)
-            if 0 <= indice < len(tareas_db):
-                tareas_db.pop(indice)
-        except ValueError:
-            pass
-    return redirect(url_for('index'))
+    id_tarea = request.form.get('id')
+    if id_tarea:
+        db.eliminar_tarea(id_tarea)
+    return redirect(url_for('tareas'))
+
+
 
 
 @app.route('/metas')
