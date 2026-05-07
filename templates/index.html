@@ -13,8 +13,8 @@
                     <h5 class="card-title fw-bold">Tareas</h5>
                     <p class="card-text text-muted small">Organiza tu horario diario.</p>
                     <div class="mt-auto">
-                   
-                   <a href="{{ url_for('tareas') }}" class="btn btn-registro w-100">
+                     <!-- En tu index.html busca el botón de Tareas -->
+                   <a href="{{ url_for('tareas') }}" class="btn bg-danger-subtle border-danger text-dark w-100 shadow-sm">
     <i class="bi bi-list-check"></i> Ir a Tareas</a>
                         
                     </div>
@@ -24,9 +24,6 @@
         <div class="col">
             <div class="card h-100 border-0 bg-transparent">
                 <img src="{{ url_for('static', filename='img/h.jpeg') }}" class="card-img-top rounded-circle  mx-auto" alt="Metas" style="width: 250px; height: 250px;">
-             
-             
-             
              
              
                 <div class="card-body d-flex flex-column">

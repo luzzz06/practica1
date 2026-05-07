@@ -7,38 +7,41 @@ app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
 
 
-tareas_db = []
-
-
 @app.route('/')
 def index():
-
     return render_template('index.html')
 
 @app.route('/tareas')
 def tareas():
-    # 1. Traemos las tareas de MongoDB
+    # 1. Verificamos si el usuario inició sesión
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    # 2. Si hay sesión, traemos las tareas de la base de datos
     lista_tareas = db.obtener_todas()
-    # 2. Renderizamos tareas.html (donde pusiste el datalist)
+    
+    # 3. Renderizamos la página pasando la lista de tareas
     return render_template('tareas.html', tareas=lista_tareas)
-
 
 @app.route('/agregar', methods=['POST'])
 def agregar():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+        
     titulo = request.form.get('tarea')
     if titulo:
         db.crear_tarea(titulo)
-    return redirect(url_for('tareas')) # Te regresa a la lista de tareas
+    return redirect(url_for('tareas'))
 
 @app.route('/eliminar', methods=['POST'])
 def eliminar():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+        
     id_tarea = request.form.get('id')
     if id_tarea:
         db.eliminar_tarea(id_tarea)
     return redirect(url_for('tareas'))
-
-
-
 
 @app.route('/metas')
 def metas():
