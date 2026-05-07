@@ -5,20 +5,14 @@ app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/tareas')
 def tareas():
-    # 1. Verificamos si el usuario inició sesión
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
     
-    # 2. Si hay sesión, traemos las tareas de la base de datos
-    lista_tareas = db.obtener_todas()
-    
-    # 3. Renderizamos la página pasando la lista de tareas
+    # Cambiamos db.obtener_todas() por el método de tu clase
+    lista_tareas = gestor.obtener_tareas_usuario(session['usuario_id'])
     return render_template('tareas.html', tareas=lista_tareas)
 
 @app.route('/agregar', methods=['POST'])
@@ -28,7 +22,9 @@ def agregar():
         
     titulo = request.form.get('tarea')
     if titulo:
-        db.crear_tarea(titulo)
+        # Llamamos a tu nuevo método con el ID del usuario
+        gestor.crear_tarea(usuario_id=session['usuario_id'], titulo=titulo)
+        
     return redirect(url_for('tareas'))
 
 @app.route('/eliminar', methods=['POST'])
@@ -38,12 +34,14 @@ def eliminar():
         
     id_tarea = request.form.get('id')
     if id_tarea:
-        db.eliminar_tarea(id_tarea)
+        # Usamos gestor en lugar de db
+        gestor.eliminar_tarea(id_tarea)
+        
     return redirect(url_for('tareas'))
 
 @app.route('/metas')
 def metas():
-    # Verificamos que el usuario esté logueado (por seguridad)
+    
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
     

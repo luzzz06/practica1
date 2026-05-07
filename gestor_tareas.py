@@ -6,10 +6,10 @@ from typing import Optional, List, Dict
 import os
 
 
-class GestorTareas:
+class Gestortareas:
     def __init__(self, uri="mongodb://localhost:27017/"):
         self.cliente = MongoClient(uri, serverSelectionTimeoutMS=2000)
-        self.db = self.cliente['Mi_gestor_tareas']
+        self.db = self.cliente['Mis_Tareas']
         self.usuarios = self.db['usuarios']
         self.usuarios.create_index("email", unique=True)
 
@@ -28,6 +28,30 @@ class GestorTareas:
 
     def obtener_usuario_por_email(self, email):
         return self.usuarios.find_one({"email": email})
+
+
+
+    def crear_tarea(self, usuario_id: str, titulo: str, descripcion: str = "", 
+                fecha_limite: Optional[datetime] = None) -> Optional[str]:
+        """Crear una nueva tarea para un usuario"""
+        # Verificar que el usuario existe
+        if not self.obtener_usuario(usuario_id):
+            print(f"❌ Error: Usuario {usuario_id} no existe")
+            return None
+        
+        tarea = {
+            "usuario_id": ObjectId(usuario_id),
+            "titulo": titulo,
+            "descripcion": descripcion,
+            "estado": "pendiente",
+            "fecha_creacion": datetime.now(),
+            "fecha_limite": fecha_limite or datetime.now() + timedelta(days=7),
+            "completada": False,
+            "etiquetas": []
+        }  
+        
+        resultado = self.tareas.insert_one(tarea)
+        return str(resultado.inserted_id)
 
 
         #aqui voy a aplicar las tareas
