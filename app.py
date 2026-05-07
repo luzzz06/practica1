@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from gestor_tareas import GestorTareas
 
-
 app = Flask(__name__)
 app.secret_key = 'mi_llave_secreta_para_flask'
 gestor = GestorTareas() 

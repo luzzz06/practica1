@@ -6,7 +6,6 @@ from typing import Optional, List, Dict
 import os
 
 
-
 class GestorTareas:
     def __init__(self, uri="mongodb://localhost:27017/"):
         self.cliente = MongoClient(uri, serverSelectionTimeoutMS=2000)
