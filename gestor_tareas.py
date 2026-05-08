@@ -4,163 +4,93 @@ from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from typing import Optional, List, Dict
 
-       
 class Gestortareas:
+    def __init__(self, uri: str = 'mongodb://localhost:27017/'):
+        try:
+            self.cliente = MongoClient(uri, serverSelectionTimeoutMS=5000)
+            self.cliente.admin.command('ping')
+            self.db = self.cliente['Mis_Tareas']
+            self.tareas = self.db['tareas']
+            self.usuarios = self.db['usuarios']
+            self._crear_indices()
+            print("✅ Conexión exitosa a MongoDB")
+        except ConnectionFailure:
+            print("❌ Error: No se pudo conectar a MongoDB")
+            raise
 
-        def __init__(self, uri="mongodb://localhost:27017/"):
-        self.db = self.cliente['Mis_Tareas']
-        self.usuarios = self.db['usuarios']
-        self.usuarios.create_index("email", unique=True)
+    def _crear_indices(self):
+        try:
+            self.usuarios.create_index("email", unique=True)
+            self.tareas.create_index([("usuario_id", 1), ("fecha_creacion", -1)])
+            self.tareas.create_index("estado")
+            self.tareas.create_index([("titulo", "text"), ("descripcion", "text")], 
+                                    name="titulo_text_descripcion_text")
+        except Exception as e:
+            if "IndexOptionsConflict" not in str(e):
+                print(f"⚠️ Aviso en índices: {e}")
 
-    def crear_usuario(self, user, email, secreto):
+    def crear_usuario(self, user: str, email: str, secreto: str) -> bool:
         try:
             self.usuarios.insert_one({
-                "user": user,
-                "email": email,
-                "secreto": secreto,
-                "fecha_registro": datetime.now()
+                "user": user, "email": email, "secreto": secreto,
+                "fecha_registro": datetime.now(), "activo": True
             })
             return True
-        except Exception as e:
-            print(f"Error al crear: {e}")
+        except DuplicateKeyError:
             return False
 
-    def obtener_usuario_por_email(self, email):
+    def obtener_usuario_por_email(self, email: str) -> Optional[Dict]:
         return self.usuarios.find_one({"email": email})
 
-
-
-    def crear_tarea(self, usuario_id: str, titulo: str, descripcion: str = "", 
-                fecha_limite: Optional[datetime] = None) -> Optional[str]:
-        """Crear una nueva tarea para un usuario"""
-        # Verificar que el usuario existe
-        if not self.obtener_usuario(usuario_id):
-            print(f"❌ Error: Usuario {usuario_id} no existe")
+    def obtener_usuario(self, usuario_id: str) -> Optional[Dict]:
+        try:
+            return self.usuarios.find_one({"_id": ObjectId(usuario_id)})
+        except:
             return None
-        
+
+    def crear_tarea(self, usuario_id: str, titulo: str, estado: str = "pendiente") -> Optional[str]:
+        if not self.obtener_usuario(usuario_id):
+            return None
         tarea = {
             "usuario_id": ObjectId(usuario_id),
             "titulo": titulo,
-            "descripcion": descripcion,
-            "estado": "pendiente",
+            "estado": estado,
             "fecha_creacion": datetime.now(),
-            "fecha_limite": fecha_limite or datetime.now() + timedelta(days=7),
-            "completada": False,
-            "etiquetas": []
-        }  
-        
+            "fecha_limite": datetime.now() + timedelta(days=7),
+            "completada": estado == "completada"
+        }
         resultado = self.tareas.insert_one(tarea)
         return str(resultado.inserted_id)
 
+    def obtener_tareas_usuario(self, usuario_id: str) -> List[Dict]:
+        cursor = self.tareas.find({"usuario_id": ObjectId(usuario_id)}).sort("fecha_creacion", -1)
+        resultado = []
+        for t in cursor:
+            t['_id'] = str(t['_id'])
+            t['usuario_id'] = str(t['usuario_id'])
+            resultado.append(t)
+        return resultado
 
-        #aqui voy a aplicar las tareas
-    def obtener_tareas_usuario(self, usuario_id: str, estado: Optional[str] = None) -> List[Dict]:
-        """Obtener tareas de un usuario, opcionalmente filtradas por estado"""
-        filtro = {"usuario_id": ObjectId(usuario_id)}
-        if estado:
-            filtro["estado"] = estado
-        
-        tareas = self.tareas.find(filtro).sort("fecha_creacion", -1)
-        resultado = []
-        for t in tareas:
-            t['_id'] = str(t['_id'])
-            t['usuario_id'] = str(t['usuario_id'])
-            resultado.append(t)
-        return resultado
-    
     def actualizar_estado_tarea(self, tarea_id: str, nuevo_estado: str) -> bool:
-        """Actualizar el estado de una tarea"""
-        estados_validos = ["pendiente", "en_progreso", "completada", "cancelada"]
-        if nuevo_estado not in estados_validos:
-            print(f"❌ Error: Estado '{nuevo_estado}' no válido")
-            return False
-        
-        resultado = self.tareas.update_one(
-            {"_id": ObjectId(tarea_id)},
-            {
-                "$set": {
-                    "estado": nuevo_estado,
-                    "completada": nuevo_estado == "completada",
-                    "fecha_actualizacion": datetime.now()
+        try:
+            resultado = self.tareas.update_one(
+                {"_id": ObjectId(tarea_id)},
+                {
+                    "$set": {
+                        "estado": nuevo_estado,
+                        "completada": nuevo_estado == "completada",
+                        "fecha_modificacion": datetime.now()
+                    }
                 }
-            }
-        )
-        return resultado.modified_count > 0
-    
-    def agregar_etiqueta(self, tarea_id: str, etiqueta: str) -> bool:
-        """Agregar etiqueta a una tarea"""
-        resultado = self.tareas.update_one(
-            {"_id": ObjectId(tarea_id)},
-            {"$addToSet": {"etiquetas": etiqueta}}
-        )
-        return resultado.modified_count > 0
-    
+            )
+            return resultado.modified_count > 0
+        except:
+            return False
+
     def eliminar_tarea(self, tarea_id: str) -> bool:
-        """Eliminar una tarea"""
-        resultado = self.tareas.delete_one({"_id": ObjectId(tarea_id)})
-        return resultado.deleted_count > 0
-    
-    def estadisticas_usuario(self, usuario_id: str) -> Dict:
-        """Obtener estadísticas de tareas de un usuario"""
-        pipeline = [
-            {"$match": {"usuario_id": ObjectId(usuario_id)}},
-            {"$group": {
-                "_id": "$estado",
-                "cantidad": {"$sum": 1},
-                "fecha_ultima": {"$max": "$fecha_creacion"}
-            }},
-            {"$sort": {"_id": 1}}
-        ]
-        
-        resultados = list(self.tareas.aggregate(pipeline))
-        
-        # Formatear resultados
-        estadisticas = {
-            "total": 0,
-            "por_estado": {},
-            "ultima_actividad": None
-        }
-        
-        for r in resultados:
-            estado = r['_id']
-            cantidad = r['cantidad']
-            estadisticas["por_estado"][estado] = cantidad
-            estadisticas["total"] += cantidad
-            
-            if not estadisticas["ultima_actividad"] or r['fecha_ultima'] > estadisticas["ultima_actividad"]:
-                estadisticas["ultima_actividad"] = r['fecha_ultima']
-        
-        return estadisticas
-    
-    def buscar_tareas(self, texto: str) -> List[Dict]:
-        """Buscar tareas por texto en título o descripción"""
-        # Requiere índice de texto en 'titulo' y 'descripcion'
-        tareas = self.tareas.find({
-            "$text": {"$search": texto}
-        }).sort({"score": {"$meta": "textScore"}})
-        
-        resultado = []
-        for t in tareas:
-            t['_id'] = str(t['_id'])
-            t['usuario_id'] = str(t['usuario_id'])
-            resultado.append(t)
-        return resultado
-    
-    def tareas_urgentes(self, horas: int = 24) -> List[Dict]:
-        """Encontrar tareas que vencen en las próximas N horas"""
-        ahora = datetime.now()
-        limite = ahora + timedelta(hours=horas)
-        
-        tareas = self.tareas.find({
-            "estado": {"$ne": "completada"},
-            "fecha_limite": {"$gte": ahora, "$lte": limite}
-        }).sort("fecha_limite", 1)
-        
-        resultado = []
-        for t in tareas:
-            t['_id'] = str(t['_id'])
-            t['usuario_id'] = str(t['usuario_id'])
-            resultado.append(t)
-        return resultado
-    
+        try:
+            resultado = self.tareas.delete_one({"_id": ObjectId(tarea_id)})
+            return resultado.deleted_count > 0
+        except:
+            return False
     

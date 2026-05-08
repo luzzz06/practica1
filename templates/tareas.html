@@ -1,25 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4" style="max-width: 800px;">
-    <div class="text-center mb-5">
-        <h2 class="fw-bold">Gestor de Tareas</h2>
-        <p class="text-muted">Organiza tus pendientes del día</p>
+<div class="container mt-4" style="max-width: 850px;">
+    <div class="d-flex justify-content-start align-items-center mb-4">
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm shadow-sm">
+            <i class="bi bi-arrow-left"></i> Menú Principal
+        </a>
     </div>
-    <!-- Formulario de Entrada -->
-    <div class="card shadow-sm border-0 mb-4 p-3">
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Mis Tareas</h2>
+        <p class="text-muted">Gestiona el progreso de tus actividades</p>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-5 p-3">
         <form action="{{ url_for('agregar_tarea') }}" method="POST" class="row g-2">
-            <div class="col-md-7">
-                <input type="text" name="tarea" class="form-control" placeholder="¿Qué tarea tienes pendiente?" required>
-            </div>
-            <div class="col-md-3">
-                <input class="form-control" name="categoria" list="datalistOptions" placeholder="Categoría">
-                <datalist id="datalistOptions">
-                    <option value="Escuela">
-                    <option value="Programación">
-                    <option value="Hogar">
-                    <option value="PAEC">
-                </datalist>
+            <div class="col-md-10">
+                <input type="text" name="tarea" class="form-control" placeholder="Escribe una tarea..." required>
             </div>
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">Guardar</button>
@@ -27,19 +24,59 @@
         </form>
     </div>
 
-    <!-- Lista de Tareas -->
     <div class="row row-cols-1 g-3">
         {% for t in tareas %}
         <div class="col">
-            <div class="card h-100 shadow-sm border-start border-primary border-4">
+            <div class="card h-100 shadow-sm border-start border-4 
+                {% if t.estado == 'completada' %}border-success
+                {% elif t.estado == 'en_progreso' %}border-warning
+                {% elif t.estado == 'cancelada' %}border-danger
+                {% else %}border-primary{% endif %}">
+                
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="mb-0 fw-bold">{{ t.titulo }}</h6>
-                        <span class="badge bg-light text-dark border">{{ t.categoria or 'General' }}</span>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-2 fw-bold {% if t.estado == 'completada' %}text-decoration-line-through text-muted{% endif %}">
+                            {{ t.titulo }}
+                        </h6>
+                        
+                        <div class="btn-group btn-group-sm">
+                            <form action="{{ url_for('actualizar_estado') }}" method="POST" class="d-inline">
+                                <input type="hidden" name="id" value="{{ t._id }}">
+                                <input type="hidden" name="nuevo_estado" value="pendiente">
+                                <button type="submit" class="btn btn-outline-primary {% if t.estado == 'pendiente' %}active{% endif %}">
+                                    Pendiente
+                                </button>
+                            </form>
+
+                            <form action="{{ url_for('actualizar_estado') }}" method="POST" class="d-inline ms-1">
+                                <input type="hidden" name="id" value="{{ t._id }}">
+                                <input type="hidden" name="nuevo_estado" value="en_progreso">
+                                <button type="submit" class="btn btn-outline-warning {% if t.estado == 'en_progreso' %}active{% endif %}">
+                                    En Proceso
+                                </button>
+                            </form>
+                            
+                            <form action="{{ url_for('actualizar_estado') }}" method="POST" class="d-inline ms-1">
+                                <input type="hidden" name="id" value="{{ t._id }}">
+                                <input type="hidden" name="nuevo_estado" value="completada">
+                                <button type="submit" class="btn btn-outline-success {% if t.estado == 'completada' %}active{% endif %}">
+                                    Listo
+                                </button>
+                            </form>
+
+                            <form action="{{ url_for('actualizar_estado') }}" method="POST" class="d-inline ms-1">
+                                <input type="hidden" name="id" value="{{ t._id }}">
+                                <input type="hidden" name="nuevo_estado" value="cancelada">
+                                <button type="submit" class="btn btn-outline-danger {% if t.estado == 'cancelada' %}active{% endif %}">
+                                    X
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <form action="{{ url_for('eliminar_tarea') }}" method="POST">
+                    
+                    <form action="{{ url_for('eliminar_tarea') }}" method="POST" class="ms-3">
                         <input type="hidden" name="id" value="{{ t._id }}">
-                        <button type="submit" class="btn btn-link text-danger p-0">
+                        <button type="submit" class="btn btn-sm btn-light text-danger border shadow-sm" onclick="return confirm('¿Eliminar tarea?')">
                             <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
@@ -47,9 +84,8 @@
             </div>
         </div>
         {% else %}
-        <div class="text-center mt-5">
-            <img src="{{ url_for('static', filename='img/empty.png') }}" style="width: 150px; opacity: 0.5;">
-            <p class="text-muted mt-3">No hay tareas pendientes. ¡Tómate un descanso!</p>
+        <div class="text-center py-5">
+            <p class="text-muted">No tienes tareas registradas todavía.</p>
         </div>
         {% endfor %}
     </div>

@@ -2,64 +2,48 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from gestor_tareas import Gestortareas
 
 app = Flask(__name__)
-app.secret_key = 'mi_llave_secreta_para_flask'
-gestor = Gestortareas() 
+app.secret_key = 'mi_llave_secreta_123'
+gestor = Gestortareas()
 
 @app.route('/')
 def index():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
     return render_template('index.html')
-
 
 @app.route('/tareas')
 def tareas():
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
-    
-    # Cambiamos db.obtener_todas() por el método de tu clase
-    lista_tareas = gestor.obtener_tareas_usuario(session['usuario_id'])
-    return render_template('tareas.html', tareas=lista_tareas)
+    mis_tareas = gestor.obtener_tareas_usuario(session['usuario_id'])
+    return render_template('tareas.html', tareas=mis_tareas)
 
 @app.route('/agregar', methods=['POST'])
-def agregar():
+def agregar_tarea():
     if 'usuario_id' not in session:
         return redirect(url_for('login'))
-        
     titulo = request.form.get('tarea')
     if titulo:
-        # Llamamos a tu nuevo método con el ID del usuario
-        gestor.crear_tarea(usuario_id=session['usuario_id'], titulo=titulo)
-        
+        gestor.crear_tarea(session['usuario_id'], titulo, "pendiente")
     return redirect(url_for('tareas'))
 
+@app.route('/actualizar_estado', methods=['POST'])
+def actualizar_estado():
+    if 'usuario_id' not in session:
+        return redirect(url_for('login'))
+    
+    tarea_id = request.form.get('id')
+    nuevo_estado = request.form.get('nuevo_estado')
+    if tarea_id and nuevo_estado in ["pendiente", "en_progreso", "completada", "cancelada"]:
+        gestor.actualizar_estado_tarea(tarea_id, nuevo_estado)
+        
+    return redirect(url_for('tareas'))
 @app.route('/eliminar', methods=['POST'])
-def eliminar():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
-        
-    id_tarea = request.form.get('id')
-    if id_tarea:
-        # Usamos gestor en lugar de db
-        gestor.eliminar_tarea(id_tarea)
-        
+def eliminar_tarea():
+    tarea_id = request.form.get('id')
+    if tarea_id:
+        gestor.eliminar_tarea(tarea_id)
     return redirect(url_for('tareas'))
-
-@app.route('/metas')
-def metas():
-    
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
-    
-    # Aquí podrías buscar metas en MongoDB si decides guardarlas ahí después
-    return render_template('metas.html')
-
-@app.route('/calendario')
-def calendario():
-    if 'usuario_id' not in session:
-        return redirect(url_for('login'))
-    
-    return render_template('calendario.html')
-
-
 
 @app.route('/registro', methods=['GET', 'POST'])
 def registro():
@@ -67,43 +51,36 @@ def registro():
         nombre = request.form.get('usuario')
         email = request.form.get('email')
         password = request.form.get('password')
-
-        # Registro directo
         if gestor.crear_usuario(nombre, email, password):
-            flash("¡Registro exitoso!", "success")
+            flash("Registro exitoso", "success")
             return redirect(url_for('login'))
-        else:
-            flash("Error: El correo ya existe", "danger")
-            return redirect(url_for('registro'))
-
+        flash("El correo ya existe", "danger")
     return render_template('registro.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        correo = request.form.get('email')
+        email = request.form.get('email')
         password = request.form.get('password')
-        
-        # Buscamos al usuario en la base de datos
-        usuario = gestor.obtener_usuario_por_email(correo)
-    
-        # Verificamos que el usuario exista y la contraseña ('secreto') coincida
-        if usuario and usuario['secreto'] == password:
-            session['usuario_id'] = str(usuario['_id'])
-            session['usuario_nombre'] = usuario['user'] 
+        u = gestor.obtener_usuario_por_email(email)
+        if u and u['secreto'] == password:
+            session['usuario_id'] = str(u['_id'])
+            session['usuario_nombre'] = u['user']
             return redirect(url_for('index'))
-        
-        flash("Correo o contraseña incorrectos", "danger")
+        flash("Credenciales incorrectas", "danger")
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
-    
-    session.clear() 
-    flash("Has cerrado sesión correctamente", "info")
+    session.clear()
     return redirect(url_for('login'))
 
+
+@app.route('/metas')
+def metas(): return render_template('metas.html')
+
+@app.route('/calendario')
+def calendario(): return render_template('calendario.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
